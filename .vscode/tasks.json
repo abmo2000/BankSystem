@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and Run Bank System",
+            "type": "shell",
+            "command": "g++ -o BankSystem main.cpp Validation.cpp Person.cpp Client.cpp Employee.cpp Admin.cpp && ./BankSystem",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
+
