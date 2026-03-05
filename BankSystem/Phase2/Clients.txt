@@ -1,0 +1,2 @@
+1,Alice Smith,pass1234,5000.000000
+2,Bob Updated,newpass1,3000.000000
