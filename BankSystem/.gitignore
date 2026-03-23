@@ -1,0 +1,34 @@
+# Compiled binaries
+BankSystem
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Runtime generated files
+data/
+*.txt
+!README*.md
+
+# CMake
+CMakeFiles/
+cmake_build_debug/
+cmake_build_release/
+CMakeCache.txt
+
+# Other
+*.zip
+*.tar.gz
+.env
+.env.local

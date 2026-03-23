@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankSystem Phase 3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Integrated from Phase 1 and Phase 2</p>
+                <h1>BankSystem Control Center</h1>
+                <p class="hero-copy">Phase 3 combines the core banking rules from the early phases with a persistent browser interface for clients, employees, and admins.</p>
+            </div>
+            <div class="hero-panel">
+                <p class="hero-panel-label">System state</p>
+                <div id="statsGrid" class="stats-grid"></div>
+            </div>
+        </header>
+
+        <main class="content-grid">
+            <section class="card login-card">
+                <div class="section-heading">
+                    <h2>Login</h2>
+                    <p>Use your existing Phase 2 credentials.</p>
+                </div>
+                <form id="loginForm" class="stack-form">
+                    <label>
+                        <span>Role</span>
+                        <select name="role">
+                            <option value="client">Client</option>
+                            <option value="employee">Employee</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>ID</span>
+                        <input name="id" type="number" min="1" required>
+                    </label>
+                    <label>
+                        <span>Password</span>
+                        <input name="password" type="password" required>
+                    </label>
+                    <div class="actions-row">
+                        <button type="submit">Sign In</button>
+                        <button id="logoutButton" type="button" class="ghost-button">Logout</button>
+                    </div>
+                </form>
+                <div class="hint-box">
+                    <strong>Imported sample accounts</strong>
+                    <p>Client: ID 1 / pass1234</p>
+                    <p>Employee: ID 1 / emp12345</p>
+                    <p>Admin: ID 1 / admin999</p>
+                </div>
+            </section>
+
+            <section class="card session-card">
+                <div class="section-heading">
+                    <h2>Session</h2>
+                    <p id="sessionSubtitle">No active user session.</p>
+                </div>
+                <div id="flashMessage" class="flash-message hidden"></div>
+                <div id="sessionContent" class="session-content empty-state">
+                    Log in to access banking tools.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <template id="clientTemplate">
+        <div class="dashboard-grid">
+            <section class="panel">
+                <h3>Client Profile</h3>
+                <div class="metric-box">
+                    <span>Name</span>
+                    <strong data-field="clientName"></strong>
+                </div>
+                <div class="metric-box">
+                    <span>Balance</span>
+                    <strong data-field="clientBalance"></strong>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h3>Deposit</h3>
+                <form data-form="deposit" class="stack-form compact-form">
+                    <label>
+                        <span>Amount</span>
+                        <input name="amount" type="number" min="1" step="0.01" required>
+                    </label>
+                    <button type="submit">Deposit Funds</button>
+                </form>
+            </section>
+
+            <section class="panel">
+                <h3>Withdraw</h3>
+                <form data-form="withdraw" class="stack-form compact-form">
+                    <label>
+                        <span>Amount</span>
+                        <input name="amount" type="number" min="1" step="0.01" required>
+                    </label>
+                    <button type="submit">Withdraw Funds</button>
+                </form>
+            </section>
+
+            <section class="panel full-width">
+                <h3>Transfer</h3>
+                <form data-form="transfer" class="stack-form compact-form two-col-form">
+                    <label>
+                        <span>Recipient Client ID</span>
+                        <input name="recipientId" type="number" min="1" required>
+                    </label>
+                    <label>
+                        <span>Amount</span>
+                        <input name="amount" type="number" min="1" step="0.01" required>
+                    </label>
+                    <button type="submit">Send Transfer</button>
+                </form>
+            </section>
+        </div>
+    </template>
+
+    <template id="employeeTemplate">
+        <div class="dashboard-grid">
+            <section class="panel">
+                <h3>Employee Profile</h3>
+                <div class="metric-box"><span>Name</span><strong data-field="employeeName"></strong></div>
+                <div class="metric-box"><span>Salary</span><strong data-field="employeeSalary"></strong></div>
+                <div class="metric-box"><span>Managed Clients</span><strong data-field="clientCount"></strong></div>
+            </section>
+
+            <section class="panel">
+                <h3>Create Client</h3>
+                <form data-form="createClient" class="stack-form compact-form">
+                    <label><span>Name</span><input name="name" required></label>
+                    <label><span>Password</span><input name="password" required></label>
+                    <label><span>Opening Balance</span><input name="balance" type="number" min="1500" step="0.01" required></label>
+                    <button type="submit">Create Client</button>
+                </form>
+            </section>
+
+            <section class="panel full-width">
+                <h3>Update Client</h3>
+                <form data-form="updateClient" class="stack-form compact-form three-col-form">
+                    <label><span>Client ID</span><input name="id" type="number" min="1" required></label>
+                    <label><span>Name</span><input name="name" required></label>
+                    <label><span>Password</span><input name="password" required></label>
+                    <label><span>Balance</span><input name="balance" type="number" min="1500" step="0.01" required></label>
+                    <button type="submit">Save Client Changes</button>
+                </form>
+            </section>
+
+            <section class="panel full-width">
+                <div class="table-heading">
+                    <h3>Clients</h3>
+                    <p>Live data from the persisted Phase 3 store.</p>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Name</th><th>Balance</th></tr>
+                        </thead>
+                        <tbody data-field="clientsTable"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </template>
+
+    <template id="adminTemplate">
+        <div class="dashboard-grid">
+            <section class="panel">
+                <h3>Admin Profile</h3>
+                <div class="metric-box"><span>Name</span><strong data-field="adminName"></strong></div>
+                <div class="metric-box"><span>Salary</span><strong data-field="adminSalary"></strong></div>
+                <div class="metric-box"><span>Employees</span><strong data-field="employeeCount"></strong></div>
+            </section>
+
+            <section class="panel">
+                <h3>Create Employee</h3>
+                <form data-form="createEmployee" class="stack-form compact-form">
+                    <label><span>Name</span><input name="name" required></label>
+                    <label><span>Password</span><input name="password" required></label>
+                    <label><span>Salary</span><input name="salary" type="number" min="5000" step="0.01" required></label>
+                    <button type="submit">Create Employee</button>
+                </form>
+            </section>
+
+            <section class="panel full-width">
+                <h3>Update Employee</h3>
+                <form data-form="updateEmployee" class="stack-form compact-form three-col-form">
+                    <label><span>Employee ID</span><input name="id" type="number" min="1" required></label>
+                    <label><span>Name</span><input name="name" required></label>
+                    <label><span>Password</span><input name="password" required></label>
+                    <label><span>Salary</span><input name="salary" type="number" min="5000" step="0.01" required></label>
+                    <button type="submit">Save Employee Changes</button>
+                </form>
+            </section>
+
+            <section class="panel full-width split-panel">
+                <div>
+                    <div class="table-heading">
+                        <h3>Employees</h3>
+                        <p>Admin-managed staff records.</p>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>ID</th><th>Name</th><th>Salary</th></tr></thead>
+                            <tbody data-field="employeesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <div class="table-heading">
+                        <h3>Admins</h3>
+                        <p>Current administrative accounts.</p>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>ID</th><th>Name</th><th>Salary</th></tr></thead>
+                            <tbody data-field="adminsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </template>
+
+    <script src="/app.js"></script>
+</body>
+</html>
